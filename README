@@ -10,8 +10,12 @@ I know that the bird looks terrible. I can't draw any better sprites.
 Compiling and installing:
 - Ensure that Xlib headers are installed. On Gentoo, that is "x11-libs/libX11",
   on Debian, that is "libx11-dev", and so on.
+- ./configure
+  For an installation into the local user directory, adjust prefix:
+    ./configure --prefix ~/.local
+  See ./configure --help for other configuration options.
 - make
-- make PREFIX=/whatever/path install
+- make install
 
 Highscore is stored in a file ".xflappy-highscore" in the current user's home
 directory. To reset the highscore, simply delete that file.

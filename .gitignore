@@ -1,4 +1,6 @@
 xflappy
 xflappy.tar.gz
+config.h
+Makefile.config
 *.o
 *.swp

@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# Defaults
+prefix="/usr/local"
+pxpath="share/xflappy"
+delay=30000
+# Note: not currently configurable, but leaving them here is easier than
+#       creating yet another file
+wwidth=640
+wheight=480
+
+# Option processing
+while [ $# -gt 0 ] ; do
+  case $1 in
+  -h|--help)
+    cat 1>&2 << EOF
+Usage: ./configure [options]
+Options:
+  --prefix [path]: sets installation prefix
+                   (default: /usr/local)
+  --pxpath [path]: sets path to pixmaps directory within the prefix,
+                   (default: share/xflappy)
+  --delay [int]:   delay between frames, in microseconds
+                   (default: 30000)
+EOF
+    exit ;;
+  -p|--prefix) prefix="$2" ; shift ;;
+  -x|--pxpath) pxpath="$2" ; shift ;;
+  -d|--delay)  delay="$2"  ; shift ;;
+  esac
+  shift
+done
+
+# config.h
+echo "/* Auto-generated file. Use ./configure instead of editing. */" > config.h
+echo "#ifndef CONFIG_H" >> config.h
+echo "#define CONFIG_H" >> config.h
+echo "#define PREFIX \"$prefix\"" >> config.h
+echo "#define PXPATH \"$pxpath\"" >> config.h
+echo "#define DELAY $delay" >> config.h
+echo "#define WWIDTH $wwidth" >> config.h
+echo "#define WHEIGHT $wheight" >> config.h
+echo "#endif" >> config.h
+
+# Makefile.config only needs the options that affect installation
+echo "PREFIX=${prefix}" > Makefile.config
+echo "PXPATH=${pxpath}" >> Makefile.config
+
+# Information for the user
+echo "Set prefix to $prefix"
+echo "Set pixmap path to $pxpath"
+echo "Set delay to $delay"

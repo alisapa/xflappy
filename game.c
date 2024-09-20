@@ -219,8 +219,9 @@ int game(void) {
 }
 
 void init_game_resources(void) {
-  char *files[] = { "pix/bird1.xpm", "pix/bird2.xpm", "pix/crash.xpm" };
+  char *files[] = { "bird1.xpm", "bird2.xpm", "crash.xpm" };
   Pixmap *pixs[] = { &bird1, &bird2, &birdc };
+  char buf[256];
   int ret, xhot, yhot, w, h;
   int i;
 
@@ -229,10 +230,10 @@ void init_game_resources(void) {
 
   /* Load bitmaps */
   for (i = 0; i < 3; i++) {
-    ret = XReadBitmapFile(disp, win, files[i],
-                          &w, &h, pixs[i], &xhot, &yhot);
+    sprintf(buf, "%s/%s/%s", PREFIX, PXPATH, files[i]);
+    ret = XReadBitmapFile(disp, win, buf, &w, &h, pixs[i], &xhot, &yhot);
     if (ret != BitmapSuccess) {
-      fprintf(stderr, "%s: failed to read bitmap %s\n", progname, files[i]);
+      fprintf(stderr, "%s: failed to read bitmap %s\n", progname, buf);
       exit(1);
     }
     if (w != bird_size || h != bird_size) {
