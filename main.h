@@ -1,0 +1,10 @@
+extern char *progname;
+extern Display *disp;
+extern Screen  *screen_ptr;
+extern int      screen_num;
+extern Window  win;
+extern Pixmap  pix;
+extern GC      gc, rgc, stipple_gc, stipplem_gc;
+extern XFontStruct *font_info;
+extern Font    font;
+extern unsigned highscore;

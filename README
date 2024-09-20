@@ -1,0 +1,17 @@
+xflappy - Flappy bird clone for X11
+
+Written in C89 for pure Xlib (no frameworks).
+Just a side-project written in two days, so it was only tested on Gentoo Linux,
+but there is no reason why it shouldn't run on other UNIX-like systems.
+Very slow systems might require an adjustment of DELAY (see: config.h).
+
+I know that the bird looks terrible. I can't draw any better sprites.
+
+Compiling and installing:
+- Ensure that Xlib headers are installed. On Gentoo, that is "x11-libs/libX11",
+  on Debian, that is "libx11-dev", and so on.
+- make
+- make PREFIX=/whatever/path install
+
+Highscore is stored in a file ".xflappy-highscore" in the current user's home
+directory. To reset the highscore, simply delete that file.
