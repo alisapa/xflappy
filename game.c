@@ -13,7 +13,8 @@
 #include "menu.h"
 #include "util.h"
 
-int birdy;
+int birdy, birdw, birdh;
+int crashw, crashh;
 unsigned score;
 unsigned frame;
 
@@ -37,8 +38,6 @@ char score_str[18];
 int score_len;
 int score_changed;
 
-const int bird_size = 32;
-const int bird_half = bird_size/2;
 const int birdx = 64;
 const int bird_up = 16;
 const int spike_move = 4;
@@ -62,7 +61,7 @@ void draw_game(void) {
   }
   XFillRectangle(disp, pix, rgc, 0, 0, WWIDTH, WHEIGHT);
   XCopyPlane(disp, (frame / 15) % 2 ? bird1 : bird2,
-            pix, gc, 0, 0, bird_size, bird_size, birdx, birdy, 1);
+            pix, gc, 0, 0, birdw, birdh, birdx, birdy, 1);
   for (s = spikes; s; s = s->next) {
     int bottom = s->hole_top + spike_hole;
     XFillRectangle(disp, pix, stipple_gc, s->x, 0, spike_width, s->hole_top);
@@ -83,11 +82,11 @@ int crashed(void) {
   /* Get left-most spike that isn't to the left of the bird */
   for (s = lastsp; s && s->x + spike_width < birdx; s = s->prev);
   if (s) {
-    if (s->x > birdx + bird_size) {
+    if (s->x > birdx + birdw) {
       /* Bird hasn't reached this spike yet */
       return NONE;
     }
-    if (birdy < s->hole_top || birdy + bird_size > s->hole_top + spike_hole)
+    if (birdy < s->hole_top || birdy + birdh > s->hole_top + spike_hole)
       return SPIKE;
   }
   return NONE;
@@ -204,7 +203,7 @@ int game(void) {
   /* Crash animation */
   draw_game();
   /* TODO: transparent instead of opaque crash (XChangeGC?) */
-  XCopyPlane(disp, birdc, win, gc, 0, 0, bird_size, bird_size, birdx, birdy, 1);
+  XCopyPlane(disp, birdc, win, gc, 0, 0, crashw, crashh, birdx, birdy, 1);
   XFlush(disp);
 
   while (spikes) {
@@ -218,30 +217,26 @@ int game(void) {
   return menu_keys();
 }
 
-void init_game_resources(void) {
-  char *files[] = { "bird1.xpm", "bird2.xpm", "crash.xpm" };
-  Pixmap *pixs[] = { &bird1, &bird2, &birdc };
+void load_bitmap(char *name, Pixmap *out, int *w, int *h) {
   char buf[256];
-  int ret, xhot, yhot, w, h;
-  int i;
+  int ret, xhot, yhot;
+  sprintf(buf, "%s/%s/%s", PREFIX, PXPATH, name);
+  ret = XReadBitmapFile(disp, win, buf, w, h, out, &xhot, &yhot);
+  if (ret != BitmapSuccess) {
+    fprintf(stderr, "%s: failed to read bitmap %s\n", progname, buf);
+    exit(1);
+  }
+}
 
+void init_game_resources(void) {
   /* Seed RNG */
   srand(time(NULL));
 
   /* Load bitmaps */
-  for (i = 0; i < 3; i++) {
-    sprintf(buf, "%s/%s/%s", PREFIX, PXPATH, files[i]);
-    ret = XReadBitmapFile(disp, win, buf, &w, &h, pixs[i], &xhot, &yhot);
-    if (ret != BitmapSuccess) {
-      fprintf(stderr, "%s: failed to read bitmap %s\n", progname, buf);
-      exit(1);
-    }
-    if (w != bird_size || h != bird_size) {
-      fprintf(stderr, "%s: expected bitmap of size %dx%d, but got %dx%d\n",
-          progname, bird_size, bird_size, w, h);
-      exit(1);
-    }
-  }
+  load_bitmap("bird1.xpm", &bird1, &birdw, &birdh);
+  load_bitmap("bird2.xpm", &bird2, &birdw, &birdh);
+  load_bitmap("crash.xpm", &birdc, &crashw, &crashh);
+  printf("birdw %d birdh %d crashw %d crashh %d\n", birdw, birdh, crashw, crashh);
 }
 
 void free_game_resources(void) {
