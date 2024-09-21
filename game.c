@@ -236,7 +236,6 @@ void init_game_resources(void) {
   load_bitmap("bird1.xpm", &bird1, &birdw, &birdh);
   load_bitmap("bird2.xpm", &bird2, &birdw, &birdh);
   load_bitmap("crash.xpm", &birdc, &crashw, &crashh);
-  printf("birdw %d birdh %d crashw %d crashh %d\n", birdw, birdh, crashw, crashh);
 }
 
 void free_game_resources(void) {
