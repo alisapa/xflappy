@@ -43,7 +43,7 @@ int menu_keys(void) {
         break;
       case KeyPress:
         key = XLookupKeysym(&report.xkey, 0);
-        if (key == NoSymbol || report.xkey.state || is_modifier(key)) break;
+        if (key == NoSymbol || is_modifier(key)) break;
         if (key == XK_Escape || key == XK_q) return 1;
         return 0;
       case ButtonPress:

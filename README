@@ -19,3 +19,7 @@ Compiling and installing:
 
 Highscore is stored in a file ".xflappy-highscore" in the current user's home
 directory. To reset the highscore, simply delete that file.
+
+Note that when the program says to press "any key" in a menu, this excludes
+some modifier keys such as Ctrl, Alt, or Shift. This is for avoiding that
+window manager commands like Alt+Tab start a new game.

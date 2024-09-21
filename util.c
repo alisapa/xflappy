@@ -20,15 +20,19 @@ void die(char *msg) {
 /* Also note that this can't be done with report.xkey.state, because when the
  * modifier key itself is pressed (e.g. Ctrl), the resulting KeyPress event
  * still has state == 0. Only subsequent keypresses while the modifier is being
- * held down will have state != 0. */
+ * held down will have state != 0.
+ * We actually do NOT want to ignore all keys pressed with report.xkey.state,
+ * because that would mean all keypressed are ignored if NumLock is pressed. */
 int is_modifier(KeySym k) {
   /* TODO: is there any better way to do this? */
-  return   k == XK_Control_L || k == XK_Control_R
+  return   k == XK_Shift_L   || k == XK_Shift_R
+        || k == XK_Control_L || k == XK_Control_R
         || k == XK_Meta_L    || k == XK_Meta_R
         || k == XK_Alt_L     || k == XK_Alt_R
         || k == XK_Super_L   || k == XK_Super_R
         || k == XK_Hyper_L   || k == XK_Hyper_R
-        || k == XK_Caps_Lock || k == XK_Shift_Lock;
+        || k == XK_Caps_Lock || k == XK_Shift_Lock
+        || k == XK_Num_Lock  || k == XK_Scroll_Lock;
 }
 
 char *filepath(void) {
